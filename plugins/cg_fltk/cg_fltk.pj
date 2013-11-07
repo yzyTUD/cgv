@@ -1,10 +1,47 @@
-@exclude<cgv/config/make.ppp>
-@define(projectType="plugin")
-@define(projectName="cg_fltk")
-@define(projectGUID="E4E3902D-4700-4EE9-A64E-6BD4DD762E73")
-@define(addIncDirs=[CGV_DIR."/libs"])
-@define(addProjectDirs=[CGV_DIR."/3rd/fltk", CGV_DIR."/libs/cgv_gl"])
-@define(addProjectDeps=["cgv_gui","cgv_render", "cgv_media", "cgv_utils", "cgv_os","cgv_base","cgv_data", "cgv_type","cgv_signal", "cgv_reflect", "cgv_gl", "fltk"])
-@define(addSharedDefines=["CGV_GUI_FLTK_EXPORTS"])
-@define(addDependencies=[["Comdlg32","static"]])
+@=
+projectType="plugin";
+projectName="cg_fltk";
+projectGUID="E4E3902D-4700-4EE9-A64E-6BD4DD762E73";
 
+addProjectDirs  =[CGV_DIR."/libs/cgv_gl"];
+addIncDirs      =[CGV_DIR."/libs"];
+addSharedDefines=["CGV_GUI_FLTK_EXPORTS"];
+addDependencies =[ ["Comdlg32","static"] ];
+
+addProjectDeps=[
+	"cgv_utils", "cgv_type", "cgv_data", "cgv_media", "cgv_render", "cgv_signal", "cgv_base", "cgv_reflect", "cgv_gui", "cgv_os", 
+	"cgv_gl"
+];
+
+//fltk_ver = "1.3";
+fltk_ver = "2.0";
+
+if (fltk_ver == "1.3") {
+
+	addDefines=["FLTK_1_3"];
+
+	fltk_source_dir = "S:/develop/projects/3rd/fltk-1.3.2";
+	fltk_build_dir  = "S:/develop/build/3rd/fltk-1.3.2";
+
+	addIncDirs=addIncDirs.[fltk_source_dir];
+
+	addLibDirs=[
+		fltk_build_dir."/lib/Debug",
+		fltk_build_dir."/lib/Release"
+	];
+
+	addMapDeps = [
+		[ "fltk", ["fltk","fltkd","fltkdll","fltkdlld"] ],
+		[ "fltkgl", ["fltkgl","fltkgld","fltkgldll","fltkgldlld"] ]
+	];
+
+	addDependencies=addDependencies.[
+		"fltk",
+		"fltkgl"
+	];
+
+} else {
+	addDefines=["FLTK_2_0"];
+	addProjectDirs=addProjectDirs.[CGV_DIR."/3rd/fltk"];
+	addProjectDeps=addProjectDeps.["fltk"];
+}

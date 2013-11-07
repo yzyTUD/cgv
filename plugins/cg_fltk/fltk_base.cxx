@@ -12,11 +12,23 @@
 #ifdef WIN32
 #pragma warning(disable:4311)
 #endif
+
+#ifdef FLTK_1_3
+#include <FL/Fl.h>
+#include <FL/FL_Widget.h>
+#include <FL/FL_Group.h>
+#include <FL/Fl_Shared_Image.H>
+#define FLTK_ENUM(sym) FL_##sym
+#define SharedImage Fl_Shared_Image
+#else
 #include <fltk/Widget.h>
 #include <fltk/Group.h>
 #include <fltk/Cursor.h>
 #include <fltk/events.h>
 #include <fltk/SharedImage.h>
+#define FLTK_ENUM_PREFIX fltk::
+#define SharedImage fltk::SharedImage
+#endif
 #ifdef WIN32
 #pragma warning(default:4311)
 #endif
@@ -24,12 +36,12 @@
 using namespace cgv::media::image;
 using namespace cgv::data;
 using namespace cgv::type;
-using namespace fltk;
+//using namespace fltk;
 
 
 fltk_base::fltk_base()
 {
-	cursor = fltk::CURSOR_DEFAULT;
+	cursor = FLTK(CURSOR_DEFAULT);
 	default_width = 0;
 	default_height = 0;
 	minimum_width = 0;
@@ -62,11 +74,11 @@ public:
 		image_reader r(df);
 		if (!r.read_image(name, dv))
 			return false;
-		PixelType pt = RGB;
+		fltk::PixelType pt = fltk::RGB;
 		switch (df.get_standard_component_format()) {
-		case CF_L : pt = MONO; break;
-		case CF_RGB : pt = RGB; break;
-		case CF_RGBA : pt = RGBA; break;
+		case CF_L : pt = fltk::MONO; break;
+		case CF_RGB : pt = fltk::RGB; break;
+		case CF_RGBA : pt = fltk::RGBA; break;
 		default:
 			std::cerr << "could not deduce fltk::PixelType of image " << name << std::endl;
 			return false;
@@ -104,9 +116,9 @@ bool fltk_base::set_void(fltk::Widget* w, cgv::base::named* nam, const std::stri
 		w->image(cgvImage::get(variant<std::string>::get(value_type, value_ptr).c_str()));
 	else if (property == "fit_image") {
 		if (variant<bool>::get(value_type, value_ptr))
-			w->flags(w->flags()|RESIZE_FIT);
+			w->flags(w->flags()|fltk::RESIZE_FIT);
 		else
-			w->flags(w->flags()&~RESIZE_FIT);
+			w->flags(w->flags()&~fltk::RESIZE_FIT);
 	}
 	else if (property == "tooltip") {
 		tooltip = variant<std::string>::get(value_type, value_ptr);
@@ -235,7 +247,7 @@ bool fltk_base::get_void(const fltk::Widget* w, cgv::base::named* nam, const std
 	else if (property == "image") 
 		set_variant(w->image()?w->image()->name():"", value_type, value_ptr);
 	else if (property == "fit_image")
-		set_variant((w->flags()&RESIZE_FIT)==RESIZE_FIT, value_type, value_ptr);
+		set_variant((w->flags()&fltk::RESIZE_FIT)==fltk::RESIZE_FIT, value_type, value_ptr);
 	else if (property == "tooltip")
 		set_variant(w->tooltip(), value_type, value_ptr);
 	else if (property == "active")

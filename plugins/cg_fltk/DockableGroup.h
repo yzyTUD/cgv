@@ -1,7 +1,11 @@
 #pragma once
 
 #include <vector>
+#ifdef FLTK_1_3
+#include <FL/FL_Group.h>
+#else
 #include <fltk/Group.h>
+#endif
 
 class DockableGroup : public fltk::Group 
 {

@@ -14,6 +14,18 @@
 #ifdef WIN32
 #pragma warning (disable:4311)
 #endif
+
+#ifdef FLTK_1_3
+#include <FL/FL_Item.h>
+#include <FL/FL_Cursor.h>
+#include <FL/FL_ItemGroup.h>
+#include <FL/FL_Tile.h>
+#include <FL/FL_Tabs.h>
+#include <FL/FL_Menu.h>
+#include <FL/FL_Pack.h>
+#include <FL/FL_Button.h>
+#include <FL/FL_run.h>
+#else
 #include <fltk/Item.h>
 #include <fltk/Cursor.h>
 #include <fltk/ItemGroup.h>
@@ -23,6 +35,8 @@
 #include <fltk/PackedGroup.h>
 #include <fltk/Button.h>
 #include <fltk/run.h>
+#endif
+
 #ifdef WIN32
 #include <fltk/win32.h>
 #include <windows.h>

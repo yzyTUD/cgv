@@ -3,10 +3,21 @@
 #include <string>
 #include <cgv/base/named.h>
 
+#ifdef FLTK_1_3
+	class Fl_Widget;
+	enum Fl_Cursor;
+#define FLTK(sym) FL_##sym
+#define Fltk(sym) Fl_##sym
+#define FltkCurMem Fl_Cursor
+#else
 namespace fltk {
 	class Widget;
 	struct Cursor;
 }
+#define FLTK(sym) fltk::##sym
+#define Fltk(sym) fltk::##sym
+#define FltkCurMem fltk::Cursor*
+#endif
 
 #include "lib_begin.h"
 
@@ -17,7 +28,7 @@ struct CGV_API fltk_base
 {
 	fltk_base();
 	/// store the cursor
-	fltk::Cursor* cursor;
+	FltkCurMem cursor;
 	/// store the tooltip as string
 	std::string tooltip;
 	// store the alignment as string
@@ -29,11 +40,11 @@ struct CGV_API fltk_base
 	/// returns declarations for the reflected properties of a fltk Widget
 	std::string get_property_declarations();
 	/// set the property of a fltk widget
-	bool set_void(fltk::Widget* w, cgv::base::named* nam, const std::string& property, const std::string& type, const void* value);
+	bool set_void(Fltk(Widget)* w, cgv::base::named* nam, const std::string& property, const std::string& type, const void* value);
 	/// get the property of a fltk widget 
-	bool get_void(const fltk::Widget* w, cgv::base::named* nam, const std::string& property, const std::string& type, void* value);
+	bool get_void(const Fltk(Widget)* w, cgv::base::named* nam, const std::string& property, const std::string& type, void* value);
 	/// handle method that ensures that the cursor is shown correctly
-	int handle(fltk::Widget* w, int event);
+	int handle(Fltk(Widget)* w, int event);
 };
 
 /// helper template to support changing the cursor when hovering over a widget
